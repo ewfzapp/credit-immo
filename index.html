@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculateur de Capacité d'Emprunt Immobilier 2026 - Service Express</title>
+  <meta name="description" content="Calculez gratuitement votre capacité d'emprunt immobilier. Simulation basée sur le taux d'endettement maximum de 35%. Gratuit et sans inscription.">
+  <style>
+    :root {
+      --bg: #020617; --surface: rgba(255,255,255,0.05); --border: rgba(255,255,255,0.1);
+      --purple: #a78bfa; --accent: #7c3aed; --text: #e2e8f0; --muted: #94a3b8; --green: #34d399;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 0 16px 60px; }
+    .ad-placeholder { background: var(--surface); border: 1px dashed var(--border); border-radius: 12px; margin: 20px auto; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 0.7rem; text-transform: uppercase; min-height: 90px; max-width: 800px; }
+    header { text-align: center; padding: 40px 0; border-bottom: 1px solid var(--border); margin-bottom: 30px; }
+    h1 { font-size: 28px; color: var(--purple); }
+    .container { max-width: 800px; margin: 0 auto; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 20px; }
+    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; margin-top: 15px; }
+    input, select { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; color: #fff; font-size: 16px; outline: none; }
+    input:focus { border-color: var(--purple); }
+    .result-box { text-align: center; padding: 30px; background: rgba(52,211,153,0.05); border: 2px solid var(--green); border-radius: 20px; margin-top: 20px; display: none; }
+    .result-val { font-size: 48px; font-weight: 800; color: var(--green); }
+    footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 40px; }
+    a { color: var(--purple); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏠 Capacité d'Emprunt <span>Immo</span></h1>
+    <p style="color:var(--muted)">Estimez votre budget d'achat immobilier en 1 clic</p>
+  </header>
+  
+  <div class="ad-placeholder">Publicité AdSense - Bannière</div>
+
+  <main class="container">
+    <div class="card">
+      <label>Revenus nets mensuels du foyer (€)</label>
+      <input type="number" id="revenus" placeholder="3000" oninput="calculer()">
+      <label>Charges mensuelles actuelles (autres crédits) (€)</label>
+      <input type="number" id="charges" placeholder="0" oninput="calculate()">
+      <label>Durée de l'emprunt (années)</label>
+      <select id="duree" onchange="calculer()">
+        <option value="15">15 ans</option>
+        <option value="20" selected>20 ans</option>
+        <option value="25">25 ans</option>
+      </select>
+      <label>Taux d'intérêt estimé (%)</label>
+      <input type="number" id="taux" value="3.8" step="0.1" oninput="calculer()">
+    </div>
+
+    <div id="result" class="result-box">
+      <div style="font-size:14px; color:var(--muted); text-transform:uppercase;">Votre capacité d'emprunt estimée</div>
+      <div class="result-val" id="capa-emprunt">0 €</div>
+      <p id="mensualite-info" style="margin-top:10px;"></p>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 Service Express · <a href="privacy.html">Confidentialité</a> · <a href="legal.html">Mentions Légales</a></p>
+  </footer>
+
+  <script>
+    function calculer() {
+      const revenus = parseFloat(document.getElementById('revenus').value) || 0;
+      const charges = parseFloat(document.getElementById('charges').value) || 0;
+      const dureeAns = parseInt(document.getElementById('duree').value);
+      const tauxAnnuel = parseFloat(document.getElementById('taux').value) / 100;
+      
+      if (revenus <= 0) return;
+
+      const mensualiteMax = (revenus * 0.35) - charges;
+      if (mensualiteMax <= 0) {
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('capa-emprunt').textContent = '0 €';
+        document.getElementById('mensualite-info').textContent = 'Votre taux d\'endettement actuel (35%) est déjà atteint.';
+        return;
+      }
+
+      const m = mensualiteMax;
+      const n = dureeAns * 12;
+      const i = tauxAnnuel / 12;
+      
+      const capital = m * (1 - Math.pow(1 + i, -n)) / i;
+
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('capa-emprunt').textContent = Math.round(capital).toLocaleString('fr-FR') + ' €';
+      document.getElementById('mensualite-info').textContent = `Basé sur une mensualité de ${Math.round(mensualiteMax)} € (35% d'endettement)`;
+    }
+  </script>
+</body>
+</html>
